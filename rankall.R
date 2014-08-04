@@ -36,17 +36,32 @@ rankall <- function(outcome, num = "best") {
          workingFrame <- data.frame(outData$State
                                     , outData$Hospital.Name
                                     , resultVector)
+         ## when you cobble together vectors into a frame the 
+         ## names are long. 
+         
          names(workingFrame) <- c("state", "hospital", "result")
          workingFrame$state <- as.character(workingFrame$state)
          workingFrame$hospital <- as.character(workingFrame$hospital)
+         ## order the data frame by state. 
+         
          workingSort <- workingFrame[order(workingFrame$state, workingFrame$result),]
          splitWork <- split(workingSort, as.factor(workingSort$state))
          statelength <- length(names(splitWork))
          hospital <- character(statelength)
-         for (i in 1:statelength) {
-           dF <- as.data.frame(splitWork[i])
-           names(dF) <- c("state", "hospital", "result")
-           hospital[i] <- dF$hospital[as.integer(num)]
+         
+        for (i in 1:statelength) {
+            dF <- as.data.frame(splitWork[i])
+            names(dF) <- c("state", "hospital", "result")
+            if(match(num, c("best", "worst")) == 1) {
+                  hospital[i] <- dF$hospital[1]
+              } else {
+                if(match(num, c("best", "worst")) == 2) {
+                  index = sum(!is.na(df$hospital))
+                  hospital[i] <- dF$hospital[index]
+                  } else {        
+                    hospital[i] <- dF$hospital[as.integer(num)]
+                  }}
+           
          }
          state <- names(splitWork)
          endFrame <- data.frame(hospital,state)
